@@ -1,0 +1,30 @@
+services:
+  xtool:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM swift:noble
+        # Install deps
+        RUN apt update && apt install -y libimobiledevice-utils curl
+        # Install xtool
+        RUN curl -fL \
+          "https://github.com/xtool-org/xtool/releases/latest/download/xtool-$(uname -m).AppImage" \
+          -o xtool && \
+          chmod +x xtool && \
+          mv xtool /usr/local/bin/ && \
+          echo "alias xtool='xtool --appimage-extract-and-run'" >> ~/.bashrc
+        # Manually download Xcode following https://developer.apple.com/download/all/
+        COPY ./Xcode_26.0.1_Apple_silicon.xip /tmp/Xcode/Xcode_26.0.1_Apple_silicon.xip
+        # After running a manual $ xtool auth
+        # reuse ~/.config/xtool/XTLAuthToken to bypass interactive Apple authentication
+        # volumes cannot be used during build
+        COPY ./.config/xtool /root/.config/xtool
+        RUN xtool --appimage-extract-and-run sdk /tmp/Xcode/Xcode_26.0.1_Apple_silicon.xip && \
+          rm -rf /root/.config/xtool/ && \
+          rm /tmp/Xcode/Xcode_26.0.1_Apple_silicon.xip
+
+    environment:
+      USBMUXD_SOCKET_ADDRESS: "127.0.0.1:27015"
+    network_mode: host
+    volumes:
+      - .config/xtool:/root/.config/xtool
