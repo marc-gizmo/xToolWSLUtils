@@ -22,7 +22,8 @@ services:
         RUN xtool --appimage-extract-and-run sdk /tmp/Xcode/Xcode_26.0.1_Apple_silicon.xip && \
           rm -rf /root/.config/xtool/ && \
           rm /tmp/Xcode/Xcode_26.0.1_Apple_silicon.xip
-
+    env_file:
+      - udid.env
     environment:
       USBMUXD_SOCKET_ADDRESS: "127.0.0.1:27015"
     network_mode: host
