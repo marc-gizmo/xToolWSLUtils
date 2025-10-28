@@ -25,3 +25,43 @@ If you want to keep WSL2 networking to NAT then :
 4. Your device should appear in `ideviceinfo`
 ## Option 3:
 You can use USBIPD to assign you iPhone/device to WSL with USB passthrough, but this methode will not let you access the device in Windows and WSL simultaneously. 
+
+
+# Build container to run xtool
+## Setup required:
+* Download XCode 26.0.1 from https://developer.apple.com/download/all/
+(need authentification to Apple)
+* Manual `# xtool auth` is needed to get Apple-Auth-Token 
+    xTool credentials will be stored in ~/.config/xtool/data/XTLAuthToken
+
+    When running the container, the volume .config/xtool mounted inside the container is expected to contain a working apple authentication token.
+
+    Token can be renewed by running : 
+
+    `<xtool-ctr># xtool auth`
+
+    The authentication token is needed to setup Swift's sdk
+
+* The container can be tested with :
+
+    <Host># docker compose -f  xtool.yml run --rm xtool  
+    <xtool-ctr># swift sdk list   
+    darwin
+
+## Apple Auth Token for use in container
+When running the container, the volume .config/xtool mounted inside the container is expected to contain a working apple authentication token.
+Token can be obtained/renewed by running  manually :
+`<xtool-ctr># xtool auth.`
+
+## testing the container
+The container can be tested with :
+
+    <Host># docker compose -f  xtool.yml run --rm xtool
+    <xtool-ctr># swift sdk list
+    darwin
+
+## to pair a iPhone from inside the container :
+1. `<xtool-ctr># idevicepair pair ${UDID}`  
+2. Unlock/Accept the pairing on the device  
+3. `<xtool-ctr># idevicepair validate`
+
