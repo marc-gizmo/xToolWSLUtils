@@ -65,3 +65,7 @@ The container can be tested with :
 2. Unlock/Accept the pairing on the device  
 3. `<xtool-ctr># idevicepair validate`
 
+## testing by building and deploying an app
+Service hello-world-test will build and install an Hello World App to a connected iPhone. Service can be run with the command :
+
+`docker compose -f  xtool.yml run --build --rm hello-world-test`

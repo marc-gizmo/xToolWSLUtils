@@ -31,3 +31,26 @@ services:
     network_mode: host
     volumes:
       - .config/xtool:/root/.config/xtool
+
+  hello-world-test:
+    image: xtool:latest
+    container_name: xtool-hello-world-test
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM xtool
+      additional_contexts:
+        xtool: service:xtool
+    command: >
+      bash -c "idevicepair pair ${UDID} &&
+      idevicepair validate &&
+      xtool --appimage-extract-and-run new Hello &&
+      cd Hello &&
+      xtool --appimage-extract-and-run dev"
+    env_file:
+      - udid.env
+    environment:
+      USBMUXD_SOCKET_ADDRESS: "127.0.0.1:27015"
+    network_mode: host
+    volumes:
+      - .config/xtool:/root/.config/xtool
