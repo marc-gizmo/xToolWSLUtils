@@ -1,11 +1,13 @@
 services:
   xtool:
+    image: xtool:latest
+    container_name: xtool
     build:
       context: .
       dockerfile_inline: |
         FROM swift:noble
         # Install deps
-        RUN apt update && apt install -y libimobiledevice-utils curl
+        RUN apt update && apt install -y libimobiledevice-utils curl zip
         # Install xtool
         RUN curl -fL \
           "https://github.com/xtool-org/xtool/releases/latest/download/xtool-$(uname -m).AppImage" \
